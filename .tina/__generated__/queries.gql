@@ -37,6 +37,45 @@ query getPostsList {
   }
 }
 
+query getMorepostsDocument($relativePath: String!) {
+  getMorepostsDocument(relativePath: $relativePath) {
+    sys {
+      filename
+      basename
+      breadcrumbs
+      path
+      relativePath
+      extension
+    }
+    id
+    data {
+      ...MorepostsParts
+    }
+  }
+}
+
+query getMorepostsList {
+  getMorepostsList {
+    totalCount
+    edges {
+      node {
+        id
+        sys {
+          filename
+          basename
+          breadcrumbs
+          path
+          relativePath
+          extension
+        }
+        data {
+          ...MorepostsParts
+        }
+      }
+    }
+  }
+}
+
 query getGlobalDocument($relativePath: String!) {
   getGlobalDocument(relativePath: $relativePath) {
     sys {

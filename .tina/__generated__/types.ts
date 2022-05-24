@@ -70,6 +70,8 @@ export type Query = {
   getDocumentFields: Scalars['JSON'];
   getPostsDocument: PostsDocument;
   getPostsList: PostsConnection;
+  getMorepostsDocument: MorepostsDocument;
+  getMorepostsList: MorepostsConnection;
   getGlobalDocument: GlobalDocument;
   getGlobalList: GlobalConnection;
   getAuthorsDocument: AuthorsDocument;
@@ -125,6 +127,21 @@ export type QueryGetPostsListArgs = {
 };
 
 
+export type QueryGetMorepostsDocumentArgs = {
+  relativePath?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetMorepostsListArgs = {
+  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Float']>;
+  last?: InputMaybe<Scalars['Float']>;
+  sort?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<MorepostsFilter>;
+};
+
+
 export type QueryGetGlobalDocumentArgs = {
   relativePath?: InputMaybe<Scalars['String']>;
 };
@@ -171,6 +188,7 @@ export type QueryGetPagesListArgs = {
 
 export type DocumentFilter = {
   posts?: InputMaybe<PostsFilter>;
+  moreposts?: InputMaybe<MorepostsFilter>;
   global?: InputMaybe<GlobalFilter>;
   authors?: InputMaybe<AuthorsFilter>;
   pages?: InputMaybe<PagesFilter>;
@@ -212,7 +230,7 @@ export type CollectionDocumentsArgs = {
   filter?: InputMaybe<DocumentFilter>;
 };
 
-export type DocumentNode = PostsDocument | GlobalDocument | AuthorsDocument | PagesDocument;
+export type DocumentNode = PostsDocument | MorepostsDocument | GlobalDocument | AuthorsDocument | PagesDocument;
 
 export type PostsAuthorDocument = AuthorsDocument;
 
@@ -310,6 +328,76 @@ export type PostsConnection = Connection & {
   pageInfo?: Maybe<PageInfo>;
   totalCount: Scalars['Float'];
   edges?: Maybe<Array<Maybe<PostsConnectionEdges>>>;
+};
+
+export type MorepostsAuthorDocument = AuthorsDocument;
+
+export type Moreposts = {
+  __typename?: 'Moreposts';
+  title?: Maybe<Scalars['String']>;
+  heroImg?: Maybe<Scalars['String']>;
+  excerpt?: Maybe<Scalars['JSON']>;
+  author?: Maybe<MorepostsAuthorDocument>;
+  date?: Maybe<Scalars['String']>;
+  _body?: Maybe<Scalars['JSON']>;
+};
+
+export type MorepostsDocument = Node & Document & {
+  __typename?: 'MorepostsDocument';
+  id: Scalars['ID'];
+  sys: SystemInfo;
+  data: Moreposts;
+  form: Scalars['JSON'];
+  values: Scalars['JSON'];
+  dataJSON: Scalars['JSON'];
+};
+
+export type MorepostsAuthorFilter = {
+  authors?: InputMaybe<AuthorsFilter>;
+};
+
+export type Moreposts_BodyDateTimeFilter = {
+  format?: InputMaybe<StringFilter>;
+};
+
+export type Moreposts_BodyBlockQuoteFilter = {
+  children?: InputMaybe<RichTextFilter>;
+  authorName?: InputMaybe<StringFilter>;
+};
+
+export type Moreposts_BodyNewsletterSignupFilter = {
+  children?: InputMaybe<RichTextFilter>;
+  placeholder?: InputMaybe<StringFilter>;
+  buttonText?: InputMaybe<StringFilter>;
+  disclaimer?: InputMaybe<RichTextFilter>;
+};
+
+export type Moreposts_BodyFilter = {
+  DateTime?: InputMaybe<Moreposts_BodyDateTimeFilter>;
+  BlockQuote?: InputMaybe<Moreposts_BodyBlockQuoteFilter>;
+  NewsletterSignup?: InputMaybe<Moreposts_BodyNewsletterSignupFilter>;
+};
+
+export type MorepostsFilter = {
+  title?: InputMaybe<StringFilter>;
+  heroImg?: InputMaybe<ImageFilter>;
+  excerpt?: InputMaybe<RichTextFilter>;
+  author?: InputMaybe<MorepostsAuthorFilter>;
+  date?: InputMaybe<DatetimeFilter>;
+  _body?: InputMaybe<Moreposts_BodyFilter>;
+};
+
+export type MorepostsConnectionEdges = {
+  __typename?: 'MorepostsConnectionEdges';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<MorepostsDocument>;
+};
+
+export type MorepostsConnection = Connection & {
+  __typename?: 'MorepostsConnection';
+  pageInfo?: Maybe<PageInfo>;
+  totalCount: Scalars['Float'];
+  edges?: Maybe<Array<Maybe<MorepostsConnectionEdges>>>;
 };
 
 export type GlobalHeaderIcon = {
@@ -620,6 +708,8 @@ export type Mutation = {
   createDocument: DocumentNode;
   updatePostsDocument: PostsDocument;
   createPostsDocument: PostsDocument;
+  updateMorepostsDocument: MorepostsDocument;
+  createMorepostsDocument: MorepostsDocument;
   updateGlobalDocument: GlobalDocument;
   createGlobalDocument: GlobalDocument;
   updateAuthorsDocument: AuthorsDocument;
@@ -668,6 +758,18 @@ export type MutationCreatePostsDocumentArgs = {
 };
 
 
+export type MutationUpdateMorepostsDocumentArgs = {
+  relativePath: Scalars['String'];
+  params: MorepostsMutation;
+};
+
+
+export type MutationCreateMorepostsDocumentArgs = {
+  relativePath: Scalars['String'];
+  params: MorepostsMutation;
+};
+
+
 export type MutationUpdateGlobalDocumentArgs = {
   relativePath: Scalars['String'];
   params: GlobalMutation;
@@ -705,12 +807,22 @@ export type MutationCreatePagesDocumentArgs = {
 
 export type DocumentMutation = {
   posts?: InputMaybe<PostsMutation>;
+  moreposts?: InputMaybe<MorepostsMutation>;
   global?: InputMaybe<GlobalMutation>;
   authors?: InputMaybe<AuthorsMutation>;
   pages?: InputMaybe<PagesMutation>;
 };
 
 export type PostsMutation = {
+  title?: InputMaybe<Scalars['String']>;
+  heroImg?: InputMaybe<Scalars['String']>;
+  excerpt?: InputMaybe<Scalars['JSON']>;
+  author?: InputMaybe<Scalars['String']>;
+  date?: InputMaybe<Scalars['String']>;
+  _body?: InputMaybe<Scalars['JSON']>;
+};
+
+export type MorepostsMutation = {
   title?: InputMaybe<Scalars['String']>;
   heroImg?: InputMaybe<Scalars['String']>;
   excerpt?: InputMaybe<Scalars['JSON']>;
@@ -849,6 +961,8 @@ export type BlogPostQueryQuery = { __typename?: 'Query', getPostsDocument: { __t
 
 export type PostsPartsFragment = { __typename?: 'Posts', title?: string | null | undefined, heroImg?: string | null | undefined, excerpt?: any | null | undefined, date?: string | null | undefined, _body?: any | null | undefined, author?: { __typename?: 'AuthorsDocument', id: string } | null | undefined };
 
+export type MorepostsPartsFragment = { __typename?: 'Moreposts', title?: string | null | undefined, heroImg?: string | null | undefined, excerpt?: any | null | undefined, date?: string | null | undefined, _body?: any | null | undefined, author?: { __typename?: 'AuthorsDocument', id: string } | null | undefined };
+
 export type GlobalPartsFragment = { __typename?: 'Global', header?: { __typename: 'GlobalHeader', color?: string | null | undefined, icon?: { __typename: 'GlobalHeaderIcon', color?: string | null | undefined, style?: string | null | undefined, name?: string | null | undefined } | null | undefined, nav?: Array<{ __typename: 'GlobalHeaderNav', href?: string | null | undefined, label?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, footer?: { __typename: 'GlobalFooter', color?: string | null | undefined, social?: { __typename: 'GlobalFooterSocial', facebook?: string | null | undefined, twitter?: string | null | undefined, instagram?: string | null | undefined, github?: string | null | undefined } | null | undefined } | null | undefined, theme?: { __typename: 'GlobalTheme', color?: string | null | undefined, font?: string | null | undefined, icon?: string | null | undefined, darkMode?: string | null | undefined } | null | undefined };
 
 export type AuthorsPartsFragment = { __typename?: 'Authors', name?: string | null | undefined, avatar?: string | null | undefined };
@@ -866,6 +980,18 @@ export type GetPostsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetPostsListQuery = { __typename?: 'Query', getPostsList: { __typename?: 'PostsConnection', totalCount: number, edges?: Array<{ __typename?: 'PostsConnectionEdges', node?: { __typename?: 'PostsDocument', id: string, sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, data: { __typename?: 'Posts', title?: string | null | undefined, heroImg?: string | null | undefined, excerpt?: any | null | undefined, date?: string | null | undefined, _body?: any | null | undefined, author?: { __typename?: 'AuthorsDocument', id: string } | null | undefined } } | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetMorepostsDocumentQueryVariables = Exact<{
+  relativePath: Scalars['String'];
+}>;
+
+
+export type GetMorepostsDocumentQuery = { __typename?: 'Query', getMorepostsDocument: { __typename?: 'MorepostsDocument', id: string, sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, data: { __typename?: 'Moreposts', title?: string | null | undefined, heroImg?: string | null | undefined, excerpt?: any | null | undefined, date?: string | null | undefined, _body?: any | null | undefined, author?: { __typename?: 'AuthorsDocument', id: string } | null | undefined } } };
+
+export type GetMorepostsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMorepostsListQuery = { __typename?: 'Query', getMorepostsList: { __typename?: 'MorepostsConnection', totalCount: number, edges?: Array<{ __typename?: 'MorepostsConnectionEdges', node?: { __typename?: 'MorepostsDocument', id: string, sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, data: { __typename?: 'Moreposts', title?: string | null | undefined, heroImg?: string | null | undefined, excerpt?: any | null | undefined, date?: string | null | undefined, _body?: any | null | undefined, author?: { __typename?: 'AuthorsDocument', id: string } | null | undefined } } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetGlobalDocumentQueryVariables = Exact<{
   relativePath: Scalars['String'];
@@ -951,6 +1077,20 @@ export const LayoutQueryFragmentFragmentDoc = gql`
     ${GlobalPartsFragmentDoc}`;
 export const PostsPartsFragmentDoc = gql`
     fragment PostsParts on Posts {
+  title
+  heroImg
+  excerpt
+  author {
+    ... on Document {
+      id
+    }
+  }
+  date
+  _body
+}
+    `;
+export const MorepostsPartsFragmentDoc = gql`
+    fragment MorepostsParts on Moreposts {
   title
   heroImg
   excerpt
@@ -1114,6 +1254,47 @@ export const GetPostsListDocument = gql`
   }
 }
     ${PostsPartsFragmentDoc}`;
+export const GetMorepostsDocumentDocument = gql`
+    query getMorepostsDocument($relativePath: String!) {
+  getMorepostsDocument(relativePath: $relativePath) {
+    sys {
+      filename
+      basename
+      breadcrumbs
+      path
+      relativePath
+      extension
+    }
+    id
+    data {
+      ...MorepostsParts
+    }
+  }
+}
+    ${MorepostsPartsFragmentDoc}`;
+export const GetMorepostsListDocument = gql`
+    query getMorepostsList {
+  getMorepostsList {
+    totalCount
+    edges {
+      node {
+        id
+        sys {
+          filename
+          basename
+          breadcrumbs
+          path
+          relativePath
+          extension
+        }
+        data {
+          ...MorepostsParts
+        }
+      }
+    }
+  }
+}
+    ${MorepostsPartsFragmentDoc}`;
 export const GetGlobalDocumentDocument = gql`
     query getGlobalDocument($relativePath: String!) {
   getGlobalDocument(relativePath: $relativePath) {
@@ -1254,6 +1435,12 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     getPostsList(variables?: GetPostsListQueryVariables, options?: C): Promise<{data: GetPostsListQuery, variables: GetPostsListQueryVariables, query: string}> {
         return requester<{data: GetPostsListQuery, variables: GetPostsListQueryVariables, query: string}, GetPostsListQueryVariables>(GetPostsListDocument, variables, options);
+      },
+    getMorepostsDocument(variables: GetMorepostsDocumentQueryVariables, options?: C): Promise<{data: GetMorepostsDocumentQuery, variables: GetMorepostsDocumentQueryVariables, query: string}> {
+        return requester<{data: GetMorepostsDocumentQuery, variables: GetMorepostsDocumentQueryVariables, query: string}, GetMorepostsDocumentQueryVariables>(GetMorepostsDocumentDocument, variables, options);
+      },
+    getMorepostsList(variables?: GetMorepostsListQueryVariables, options?: C): Promise<{data: GetMorepostsListQuery, variables: GetMorepostsListQueryVariables, query: string}> {
+        return requester<{data: GetMorepostsListQuery, variables: GetMorepostsListQueryVariables, query: string}, GetMorepostsListQueryVariables>(GetMorepostsListDocument, variables, options);
       },
     getGlobalDocument(variables: GetGlobalDocumentQueryVariables, options?: C): Promise<{data: GetGlobalDocumentQuery, variables: GetGlobalDocumentQueryVariables, query: string}> {
         return requester<{data: GetGlobalDocumentQuery, variables: GetGlobalDocumentQueryVariables, query: string}, GetGlobalDocumentQueryVariables>(GetGlobalDocumentDocument, variables, options);

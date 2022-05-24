@@ -51,6 +51,8 @@ type Query {
   getDocumentFields: JSON!
   getPostsDocument(relativePath: String): PostsDocument!
   getPostsList(before: String, after: String, first: Float, last: Float, sort: String, filter: PostsFilter): PostsConnection!
+  getMorepostsDocument(relativePath: String): MorepostsDocument!
+  getMorepostsList(before: String, after: String, first: Float, last: Float, sort: String, filter: MorepostsFilter): MorepostsConnection!
   getGlobalDocument(relativePath: String): GlobalDocument!
   getGlobalList(before: String, after: String, first: Float, last: Float, sort: String, filter: GlobalFilter): GlobalConnection!
   getAuthorsDocument(relativePath: String): AuthorsDocument!
@@ -61,6 +63,7 @@ type Query {
 
 input DocumentFilter {
   posts: PostsFilter
+  moreposts: MorepostsFilter
   global: GlobalFilter
   authors: AuthorsFilter
   pages: PagesFilter
@@ -89,7 +92,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter): DocumentConnection!
 }
 
-union DocumentNode = PostsDocument | GlobalDocument | AuthorsDocument | PagesDocument
+union DocumentNode = PostsDocument | MorepostsDocument | GlobalDocument | AuthorsDocument | PagesDocument
 
 union PostsAuthorDocument = AuthorsDocument
 
@@ -183,6 +186,72 @@ type PostsConnection implements Connection {
   pageInfo: PageInfo
   totalCount: Float!
   edges: [PostsConnectionEdges]
+}
+
+union MorepostsAuthorDocument = AuthorsDocument
+
+type Moreposts {
+  title: String
+  heroImg: String
+  excerpt: JSON
+  author: MorepostsAuthorDocument
+  date: String
+  _body: JSON
+}
+
+type MorepostsDocument implements Node & Document {
+  id: ID!
+  sys: SystemInfo!
+  data: Moreposts!
+  form: JSON!
+  values: JSON!
+  dataJSON: JSON!
+}
+
+input MorepostsAuthorFilter {
+  authors: AuthorsFilter
+}
+
+input Moreposts_bodyDateTimeFilter {
+  format: StringFilter
+}
+
+input Moreposts_bodyBlockQuoteFilter {
+  children: RichTextFilter
+  authorName: StringFilter
+}
+
+input Moreposts_bodyNewsletterSignupFilter {
+  children: RichTextFilter
+  placeholder: StringFilter
+  buttonText: StringFilter
+  disclaimer: RichTextFilter
+}
+
+input Moreposts_bodyFilter {
+  DateTime: Moreposts_bodyDateTimeFilter
+  BlockQuote: Moreposts_bodyBlockQuoteFilter
+  NewsletterSignup: Moreposts_bodyNewsletterSignupFilter
+}
+
+input MorepostsFilter {
+  title: StringFilter
+  heroImg: ImageFilter
+  excerpt: RichTextFilter
+  author: MorepostsAuthorFilter
+  date: DatetimeFilter
+  _body: Moreposts_bodyFilter
+}
+
+type MorepostsConnectionEdges {
+  cursor: String
+  node: MorepostsDocument
+}
+
+type MorepostsConnection implements Connection {
+  pageInfo: PageInfo
+  totalCount: Float!
+  edges: [MorepostsConnectionEdges]
 }
 
 type GlobalHeaderIcon {
@@ -466,6 +535,8 @@ type Mutation {
   createDocument(collection: String, relativePath: String!, params: DocumentMutation!): DocumentNode!
   updatePostsDocument(relativePath: String!, params: PostsMutation!): PostsDocument!
   createPostsDocument(relativePath: String!, params: PostsMutation!): PostsDocument!
+  updateMorepostsDocument(relativePath: String!, params: MorepostsMutation!): MorepostsDocument!
+  createMorepostsDocument(relativePath: String!, params: MorepostsMutation!): MorepostsDocument!
   updateGlobalDocument(relativePath: String!, params: GlobalMutation!): GlobalDocument!
   createGlobalDocument(relativePath: String!, params: GlobalMutation!): GlobalDocument!
   updateAuthorsDocument(relativePath: String!, params: AuthorsMutation!): AuthorsDocument!
@@ -476,12 +547,22 @@ type Mutation {
 
 input DocumentMutation {
   posts: PostsMutation
+  moreposts: MorepostsMutation
   global: GlobalMutation
   authors: AuthorsMutation
   pages: PagesMutation
 }
 
 input PostsMutation {
+  title: String
+  heroImg: String
+  excerpt: JSON
+  author: String
+  date: String
+  _body: JSON
+}
+
+input MorepostsMutation {
   title: String
   heroImg: String
   excerpt: JSON
